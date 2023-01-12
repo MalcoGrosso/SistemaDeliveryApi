@@ -44,7 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 							// If the request is for our hub...
 							var path = context.HttpContext.Request.Path;
 							if (!string.IsNullOrEmpty(accessToken) &&
-								path.StartsWithSegments("/Propietarios/token"))
+								path.StartsWithSegments("/API/Usuarios/mail"))
 							{//reemplazar la url por la usada en la ruta ⬆
 								context.Token = accessToken;
 							}
@@ -73,9 +73,18 @@ builder.Services.AddDbContext<DataContext>(
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
+
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
+
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-
+app.UseRouting();
+app.UseAuthentication();
 app.UseAuthorization();
 
 if (app.Environment.IsDevelopment())
@@ -83,20 +92,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
-app.UseRouting();
 
 app.MapControllers();
 app.Run();

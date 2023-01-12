@@ -13,8 +13,11 @@ namespace SistemaDeliveryApi_.Net_Core.Models
         {
 
         }
-        public DbSet<usuario> usuarios { get; set; }
-        
+        public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<Producto> Productos { get; set; }
+        public DbSet<DetallePedido> DetallePedido { get; set; }
+        public DbSet<Pedido?> Pedidos { get; set; }
+        public DbSet<Pago> Pago { get; set; }
 
         
     }
