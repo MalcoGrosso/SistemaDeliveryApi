@@ -77,7 +77,41 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         }
 
 
-
+        [HttpGet("ConsultarPago")] // obtener todos los Pagos
+        public async Task<IActionResult> ConsulPago()
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                var user = await contexto.Usuarios.FirstOrDefaultAsync(x => x.Email == usuario);
+                var pago = contexto.Pago.Where(x => x.idUsuarioPago == user.idUsuario);
+                var check = await pago.FirstOrDefaultAsync();
+ /*               if(check == null){
+                    return Ok(usuario);
+                }*/
+                var ultiP = pago.Max(x => x.idPago);
+                var pedido = contexto.Pedidos.Where(x => x.idUsuarioPedido == user.idUsuario);
+                var ultiPedido = pedido.Max(x => x.idPedido);
+                var ultimoPedidoPago = contexto.Pago.Where(x => x.idUsuarioPago == user.idUsuario && x.idPedidoPago == ultiPedido);
+                
+                if(ultimoPedidoPago == null || ultimoPedidoPago.Count() == 0){
+                    
+                    var Pagos = await ultimoPedidoPago.FirstOrDefaultAsync(x => x.idPago == ultiP);
+                    return Ok(Pagos);
+                    
+                }else{
+                
+                var Pagos = await ultimoPedidoPago.FirstOrDefaultAsync(x => x.idPago == ultiP);
+                return Ok(Pagos);
+        //        var Pago = contexto.Pago;
+        //        return Ok(Pago);
+                    }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
 
 

@@ -21,7 +21,6 @@ namespace SistemaDeliveryApi.Models
 		public string Email { get; set; }
         public string Password { get; set; }
 		public string Telefono { get; set; }
-        public string Avatar { get; set; }
         public string Tipo { get; set; }
         
        

@@ -60,7 +60,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+//var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
 builder.Services.AddDbContext<DataContext>(
     options => options.UseMySql(
         configuration["ConnectionStrings:DefaultConnection"],

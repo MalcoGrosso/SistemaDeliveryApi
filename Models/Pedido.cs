@@ -18,8 +18,13 @@ namespace SistemaDeliveryApi.Models
 		public DateTime fechaEntrega { get; set; }
 		public int Estado { get; set; }
         public int idUsuarioPedido { get; set; }
+        [ForeignKey(nameof(idUsuarioPedido))]
+        public Usuario usuario {get; set;}
 		public string latitudPedido { get; set; }
         public string longitudPedido { get; set; }
   //      public string direccionPedido { get; set;}
+        public double montoFinal { get; set; }
+
+       
     }
 }    

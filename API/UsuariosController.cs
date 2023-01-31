@@ -217,7 +217,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 
 		[HttpPost("emailPedido")] // envio del primer mail con el token para acceder al metodo mail
 		[AllowAnonymous]
-		public async Task<IActionResult> GetByEmail([FromForm]string email)
+		public async Task<IActionResult> GetByEmail([FromBody]string email)
 		{
 				var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
 				var LocalPort = feature?.LocalPort.ToString();

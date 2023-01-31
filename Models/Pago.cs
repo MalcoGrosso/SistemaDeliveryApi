@@ -12,12 +12,19 @@ namespace SistemaDeliveryApi.Models
         [Key]
         public int idPago { get; set; }
 		public int idUsuarioPago { get; set; }
+        [ForeignKey(nameof(idUsuarioPago))]
+        public Usuario usuario {get; set;}
         public int idEmpleadoPago { get; set; }
         public int idPedidoPago { get; set; }
-		public int EstadoPago { get; set; }
+        [ForeignKey(nameof(idPedidoPago))]
+        public Pedido pedido {get; set;} 
         [NotMapped]
         public DateTime FechaPago { get; set; }
         public int idTipoPagoP { get; set; }
+        [ForeignKey(nameof(idTipoPagoP))]
+        public TipoPago tipoPago {get; set;}
        
     }
 }    
+
+

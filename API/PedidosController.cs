@@ -29,7 +29,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         }
 
         // GET: api/<controller>
-        [HttpGet] // obttener todos los Pedidos
+        [HttpGet] // obtener todos los Pedidos
         public async Task<IActionResult> Get()
         {
             try
@@ -61,6 +61,14 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
                 Pedidos.idUsuarioPedido = usuario1.idUsuario; 
                 var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == usuario1.idUsuario);
+                if(ped == null || ped.Count() == 0){
+                    contexto.Add(Pedidos);
+                    await contexto.SaveChangesAsync();
+                    return Pedidos;
+                }
+                
+
+               else{
                 var ultiP = ped.Max(x => x.idPedido);
                 var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP && x.Estado == 1);
              //   var z = contexto.Pedidos.Select(x => x.idPedido == ultiP && x.Estado == 1);
@@ -78,7 +86,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 
                 }
 
-            }
+            }}
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
@@ -86,7 +94,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         }
 
         // PUT api/<controller>
-		[HttpPut("ModificarUsuario")] //actualizar la informacion del pedido del usuario
+		[HttpPut("ModificarPedido")] //actualizar la informacion del pedido del usuario
 		public async Task<IActionResult> Modificar( [FromBody] Pedido Pedido)
 		
 		{
@@ -97,9 +105,88 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 				
 					
 					Usuario original = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario);
-                    Pedido.idUsuarioPedido = original.idUsuario;
-                    Pedido.Estado = 1;
+                //    Pedido.idUsuarioPedido = original.idUsuario;
+                    var fecha1 = Pedido.fechaPedido;
+                    var latitud = Pedido.latitudPedido;
+                    var longitud = Pedido.longitudPedido;
+                    var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == original.idUsuario);
+                    var ultiP = ped.Max(x => x.idPedido);
+                    var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP && x.Estado == 1);
+                //   var z = contexto.Pedidos.Select(x => x.idPedido == ultiP && x.Estado == 1);
+                    var consulta2 = contexto.Pedidos.Where(x => x.idPedido == ultiP);
+                    Pedido = consulta2.Single();
 
+                    var detalleP = contexto.DetallePedido.Where( x => x.idUsuarioDP == original.idUsuario && x.IdentificadorDetallePedido == ultiP);
+                    var sumaMonto = detalleP.Sum(x => x.precioPedido);
+                //    Pedido.Estado = 1;
+                    Pedido.montoFinal = sumaMonto;
+                    Pedido.fechaPedido = fecha1;
+                    Pedido.latitudPedido = latitud;
+                    Pedido.longitudPedido = longitud;
+					
+					contexto.Pedidos.Update(Pedido);	
+					await contexto.SaveChangesAsync();
+					return Ok(Pedido);
+			
+			}
+			catch (Exception ex)
+			{
+				return BadRequest(ex.Message);
+			}
+		}
+
+
+    [HttpGet("obtenerPedido")] // obtener todos los Pedidos
+        public async Task<IActionResult> obtenerPedido()
+        {
+            try
+            {
+                var usuario = User.Identity.Name;
+                var user = await contexto.Usuarios.FirstOrDefaultAsync(x => x.Email == usuario);
+                var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == user.idUsuario);
+                var ultiP = ped.Max(x => x.idPedido);
+                var ped1 = contexto.Pedidos.Where(x => x.idPedido == ultiP);
+                
+                var Pedidos = await ped1.FirstOrDefaultAsync(x => x.idPedido == ultiP);
+                return Ok(Pedidos);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+
+
+
+        // PUT api/<controller>
+		[HttpPut("ModificarPedido2")] //actualizar la informacion del pedido del usuario
+		public async Task<IActionResult> Modificar2( [FromBody] Pedido Pedido)
+		
+		{
+			try
+			{
+				
+				var usuario = User.Identity.Name;
+				
+					
+					Usuario original = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario);
+                //    Pedido.idUsuarioPedido = original.idUsuario;
+                    var fecha1 = Pedido.fechaPedido;
+                    var latitud = Pedido.latitudPedido;
+                    var longitud = Pedido.longitudPedido;
+                    var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == original.idUsuario);
+                    var ultiP = ped.Max(x => x.idPedido);
+                    var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP && x.Estado == 1);
+                //   var z = contexto.Pedidos.Select(x => x.idPedido == ultiP && x.Estado == 1);
+                    var consulta2 = contexto.Pedidos.Where(x => x.idPedido == ultiP);
+                    Pedido = consulta2.Single();
+
+                    var detalleP = contexto.DetallePedido.Where( x => x.idUsuarioDP == original.idUsuario && x.IdentificadorDetallePedido == ultiP);
+                    var sumaMonto = detalleP.Sum(x => x.precioPedido);
+                    Pedido.Estado = 1;
+                
 					
 					contexto.Pedidos.Update(Pedido);	
 					await contexto.SaveChangesAsync();
@@ -115,7 +202,19 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 
 
 
-        
+
+
+
+
+
+
+
+
         
 	}
+
+
+    
 }
+
+

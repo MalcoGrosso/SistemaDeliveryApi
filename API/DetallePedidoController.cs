@@ -78,12 +78,14 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 var consulta = contexto.DetallePedido.Where(x => x.IdentificadorDetallePedido == ultiP && x.idUsuarioDP == usuario1.idUsuario && x.idProductoDP == detallePedido.idProductoDP);
                 var consultaIdDetallePedido = consulta.Min(x=> x.idDetallePedido);
                 var borrar = consulta.First(x => x.idDetallePedido == consultaIdDetallePedido);
-                    if (borrar == null)
+                    if (borrar == null ){
 						return NotFound();
+                    }
+                    else{
                     contexto.Remove(borrar);
                     await contexto.SaveChangesAsync();
                     return borrar;
-
+                    }
 
             }
             catch (Exception ex)
@@ -128,8 +130,51 @@ namespace SistemaDeliveryApi_.Net_Core.Api
             }
         }
 
+/*
+        [HttpGet("CantidadPedido/{idProductoDP}")]// Listar el pedido
+        public async Task<IActionResult> GetCantidadDetallePedido(int idProductoDP)
+        {
+
+            try
+            {
+                 var usuario = User.Identity.Name;
+                Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
+           //     Pedido pedido1 = await contexto.Pedidos.OrderBy().LastOrDefaultAsync(x => x.idUsuarioPedido == usuario1.idUsuario);
+                var pedido = contexto.Pedidos.Where(x => x.idUsuarioPedido == usuario1.idUsuario);
+                var ultiP = pedido.Max(x => x.idPedido);
+                var contador = contexto.DetallePedido.Count(x=> x.idProductoDP == idProductoDP && x.IdentificadorDetallePedido == ultiP && x.idUsuarioDP == usuario1.idUsuario);
+                    return Ok(contador);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
+*/
 
 
+        [HttpPost("CantidadPedido")]// Listar el pedido
+        public async Task<ActionResult<DetallePedido>> GetCantidadDetallePedido([FromBody] DetallePedido detallePedido)
+        {
+
+            try
+            {
+                 var usuario = User.Identity.Name;
+                Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
+           //     Pedido pedido1 = await contexto.Pedidos.OrderBy().LastOrDefaultAsync(x => x.idUsuarioPedido == usuario1.idUsuario);
+                var pedido = contexto.Pedidos.Where(x => x.idUsuarioPedido == usuario1.idUsuario);
+                var ultiP = pedido.Max(x => x.idPedido);
+                var contador = contexto.DetallePedido.Count(x=> x.idProductoDP == detallePedido.idProductoDP && x.IdentificadorDetallePedido == ultiP && x.idUsuarioDP == usuario1.idUsuario);
+                detallePedido.idUsuarioDP = contador;
+                    return Ok(detallePedido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
         
         
 	}
