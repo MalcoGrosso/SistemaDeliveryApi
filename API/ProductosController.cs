@@ -49,6 +49,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         {
             try
             {
+                
                 var usuario = User.Identity.Name;
                 Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
                 var Produc = contexto.Productos.ToArray();
