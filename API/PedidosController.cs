@@ -34,7 +34,9 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         {
             try
             {
-                var Pedidos = contexto.Pedidos;
+                 var usuario = User.Identity.Name;
+                Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
+                var Pedidos = contexto.Pedidos.Where(x => x.Estado == 1 && x.idUsuarioPedido == usuario1.idUsuario);
                 return Ok(Pedidos);
             }
             catch (Exception ex)

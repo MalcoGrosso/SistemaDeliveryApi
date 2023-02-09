@@ -175,6 +175,45 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 
             }
         }
+
+/*
+        // GET: api/<controller>
+        [HttpGet("todoVerDetallePedido")] // obtener todos los Pedidos
+        public async Task<IActionResult> obtenerVerPedidoDetalle()
+        {
+            try
+            {
+                var DetallePedido = contexto.DetallePedido;
+                return Ok(DetallePedido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+*/
+
+
+
+        [HttpGet("todoVerDetallePedido/{id}")]// Listar contratos por inmuebles     // Listar detalle de pedidos por pedidos
+        public async Task<ActionResult<List<Pedido>>> obtenerVerPedidoDetalle(int id)
+        {
+
+            try
+            {
+                var usuario = User.Identity.Name;
+                var usuario1 = await contexto.Usuarios.FirstOrDefaultAsync(x => x.Email == usuario);
+                var Pedido = contexto.DetallePedido.Where(x => x.pedido.idUsuarioPedido == usuario1.idUsuario && x.pedido.idPedido == id).Include(l => l.producto).ToList();
+        
+                    return Ok(Pedido);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+
+            }
+        }
         
         
 	}

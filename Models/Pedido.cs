@@ -12,9 +12,11 @@ namespace SistemaDeliveryApi.Models
         [Key]
         public int idPedido { get; set; }
 		public int idEmpleadoPedido { get; set; }
-        [NotMapped]
+        
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
 		public DateTime fechaPedido { get; set; }
-        [NotMapped]
+        
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
 		public DateTime fechaEntrega { get; set; }
 		public int Estado { get; set; }
         public int idUsuarioPedido { get; set; }
