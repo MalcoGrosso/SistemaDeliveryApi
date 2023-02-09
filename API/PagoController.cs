@@ -49,22 +49,19 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         // Agregar un if para preguntar el estado del pedido si el pedido anterior esta "terminado" que se cree uno nuevo, sino que se edite el ultimo pedido
         public async Task<ActionResult<Pago>> Post([FromBody] Pago Pago)
         {
-                var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
-				var LocalPort = feature?.LocalPort.ToString();
-				var ipv4 = HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
-				var ipConexion = "http://" + ipv4 + ":" + LocalPort + "/";
+             
 
             try
             {
 
                  var usuario = User.Identity.Name;
                 Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
-                Pago.idUsuarioPago = usuario1.idUsuario; 
+               // Pago.idUsuarioPago = usuario1.idUsuario; 
                 var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == usuario1.idUsuario);
                 var ultiP = ped.Max(x => x.idPedido);
                 var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP );
                 Pago.idPedidoPago = consulta.First().idPedido;
-               
+               // Pago.usuario = (Usuario)contexto.Pago.Include(x=> x.usuario);
                     contexto.Add(Pago);
                     await contexto.SaveChangesAsync();
                     return Pago;
@@ -84,7 +81,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
             {
                 var usuario = User.Identity.Name;
                 var user = await contexto.Usuarios.FirstOrDefaultAsync(x => x.Email == usuario);
-                var pago = contexto.Pago.Where(x => x.idUsuarioPago == user.idUsuario);
+                var pago = contexto.Pago.Where(x => x.usuario.idUsuario == user.idUsuario);
                 var check = await pago.FirstOrDefaultAsync();
  /*               if(check == null){
                     return Ok(usuario);
@@ -92,7 +89,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 var ultiP = pago.Max(x => x.idPago);
                 var pedido = contexto.Pedidos.Where(x => x.idUsuarioPedido == user.idUsuario);
                 var ultiPedido = pedido.Max(x => x.idPedido);
-                var ultimoPedidoPago = contexto.Pago.Where(x => x.idUsuarioPago == user.idUsuario && x.idPedidoPago == ultiPedido);
+                var ultimoPedidoPago = contexto.Pago.Where(x => x.usuario.idUsuario == user.idUsuario && x.idPedidoPago == ultiPedido);
                 
                 if(ultimoPedidoPago == null || ultimoPedidoPago.Count() == 0){
                     
