@@ -11,8 +11,7 @@ namespace SistemaDeliveryApi.Models
     {
         [Key]
         public int idDetallePedido { get; set; }
-        public int idUsuarioDP { get; set; }
-        [ForeignKey(nameof(idUsuarioDP))]
+        [NotMapped]
         public Usuario usuario {get; set;}
 		public int idProductoDP { get; set; }
         [ForeignKey(nameof(idProductoDP))]

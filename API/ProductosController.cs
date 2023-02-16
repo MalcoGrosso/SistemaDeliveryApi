@@ -52,8 +52,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 
                 var usuario = User.Identity.Name;
                 Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
-                var Produc = contexto.Productos.ToArray();
-         //       var pedido = contexto.Pedidos.Where(x => x.idUsuarioPedido == usuario1.idUsuario);
+                var Produc = contexto.Productos. ToArray();
                 var pedido = contexto.Pedidos.Include(x=> x.usuario).Where(x => x.usuario.idUsuario == usuario1.idUsuario);
                 var ultiP = pedido.Max(x => x.idPedido);
                 var consulta1 = contexto.Pedidos.Where(x=> x.idPedido ==  ultiP).Single();
@@ -65,7 +64,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 var var2 = var1 + 1;
                 for (int i = 1, x = 0; i < var2 && x < var1; i++, x++)
 				{
-					var contador = contexto.DetallePedido.Count(x=>  x.IdentificadorDetallePedido == ultiP && x.idUsuarioDP == usuario1.idUsuario &&  x.idProductoDP == i);
+					var contador = contexto.DetallePedido.Count(x=>  x.IdentificadorDetallePedido == ultiP  &&  x.idProductoDP == i);
                     var Productos = contexto.Productos.Where(x=> x.idProducto == i );
                     var producto = Productos.Single();
                     producto.cantidad = contador;

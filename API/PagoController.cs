@@ -46,7 +46,6 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 
         [HttpPost("CrearPago")] // Agrega a la base el pedido
 
-        // Agregar un if para preguntar el estado del pedido si el pedido anterior esta "terminado" que se cree uno nuevo, sino que se edite el ultimo pedido
         public async Task<ActionResult<Pago>> Post([FromBody] Pago Pago)
         {
              
@@ -56,12 +55,10 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 
                  var usuario = User.Identity.Name;
                 Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
-               // Pago.idUsuarioPago = usuario1.idUsuario; 
                 var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == usuario1.idUsuario);
                 var ultiP = ped.Max(x => x.idPedido);
                 var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP );
                 Pago.idPedidoPago = consulta.First().idPedido;
-               // Pago.usuario = (Usuario)contexto.Pago.Include(x=> x.usuario);
                     contexto.Add(Pago);
                     await contexto.SaveChangesAsync();
                     return Pago;
@@ -83,9 +80,6 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 var user = await contexto.Usuarios.FirstOrDefaultAsync(x => x.Email == usuario);
                 var pago = contexto.Pago.Where(x => x.usuario.idUsuario == user.idUsuario);
                 var check = await pago.FirstOrDefaultAsync();
- /*               if(check == null){
-                    return Ok(usuario);
-                }*/
                 var ultiP = pago.Max(x => x.idPago);
                 var pedido = contexto.Pedidos.Where(x => x.idUsuarioPedido == user.idUsuario);
                 var ultiPedido = pedido.Max(x => x.idPedido);
@@ -100,8 +94,6 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 
                 var Pagos = await ultimoPedidoPago.FirstOrDefaultAsync(x => x.idPago == ultiP);
                 return Ok(Pagos);
-        //        var Pago = contexto.Pago;
-        //        return Ok(Pago);
                     }
             }
             catch (Exception ex)

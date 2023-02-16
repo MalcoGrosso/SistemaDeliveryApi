@@ -296,11 +296,6 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 		[AllowAnonymous]
         public async Task<ActionResult<Usuario>> Post([FromBody] Usuario usuario)
         {
-                var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
-				var LocalPort = feature?.LocalPort.ToString();
-				var ipv4 = HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
-				var ipConexion = "http://" + ipv4 + ":" + LocalPort + "/";
-
             try
             {
 

@@ -48,13 +48,8 @@ namespace SistemaDeliveryApi_.Net_Core.Api
         
         [HttpPost("Crear")] // Agrega a la base el pedido
 
-        // Agregar un if para preguntar el estado del pedido si el pedido anterior esta "terminado" que se cree uno nuevo, sino que se edite el ultimo pedido
         public async Task<ActionResult<Pedido>> Post([FromBody] Pedido Pedidos)
         {
-                var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
-				var LocalPort = feature?.LocalPort.ToString();
-				var ipv4 = HttpContext.Connection.LocalIpAddress.MapToIPv4().ToString();
-				var ipConexion = "http://" + ipv4 + ":" + LocalPort + "/";
 
             try
             {
@@ -73,7 +68,6 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                else{
                 var ultiP = ped.Max(x => x.idPedido);
                 var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP && x.Estado == 1);
-             //   var z = contexto.Pedidos.Select(x => x.idPedido == ultiP && x.Estado == 1);
                 var consulta2 = contexto.Pedidos.Where(x => x.idPedido == ultiP);
                if(consulta.Any()){
                     contexto.Add(Pedidos);
@@ -107,20 +101,17 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 				
 					
 					Usuario original = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario);
-                //    Pedido.idUsuarioPedido = original.idUsuario;
                     var fecha1 = Pedido.fechaPedido;
                     var latitud = Pedido.latitudPedido;
                     var longitud = Pedido.longitudPedido;
                     var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == original.idUsuario);
                     var ultiP = ped.Max(x => x.idPedido);
                     var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP && x.Estado == 1);
-                //   var z = contexto.Pedidos.Select(x => x.idPedido == ultiP && x.Estado == 1);
                     var consulta2 = contexto.Pedidos.Where(x => x.idPedido == ultiP);
                     Pedido = consulta2.Single();
 
-                    var detalleP = contexto.DetallePedido.Where( x => x.idUsuarioDP == original.idUsuario && x.IdentificadorDetallePedido == ultiP);
+                    var detalleP = contexto.DetallePedido.Where( x => x.IdentificadorDetallePedido == ultiP);
                     var sumaMonto = detalleP.Sum(x => x.precioPedido);
-                //    Pedido.Estado = 1;
                     Pedido.montoFinal = sumaMonto;
                     Pedido.fechaPedido = fecha1;
                     Pedido.latitudPedido = latitud;
@@ -174,18 +165,16 @@ namespace SistemaDeliveryApi_.Net_Core.Api
 				
 					
 					Usuario original = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario);
-                //    Pedido.idUsuarioPedido = original.idUsuario;
                     var fecha1 = Pedido.fechaPedido;
                     var latitud = Pedido.latitudPedido;
                     var longitud = Pedido.longitudPedido;
                     var ped = contexto.Pedidos.Where(x => x.idUsuarioPedido == original.idUsuario);
                     var ultiP = ped.Max(x => x.idPedido);
                     var consulta = contexto.Pedidos.Where(x => x.idPedido == ultiP && x.Estado == 1);
-                //   var z = contexto.Pedidos.Select(x => x.idPedido == ultiP && x.Estado == 1);
                     var consulta2 = contexto.Pedidos.Where(x => x.idPedido == ultiP);
                     Pedido = consulta2.Single();
 
-                    var detalleP = contexto.DetallePedido.Where( x => x.idUsuarioDP == original.idUsuario && x.IdentificadorDetallePedido == ultiP);
+                    var detalleP = contexto.DetallePedido.Where( x =>  x.IdentificadorDetallePedido == ultiP);
                     var sumaMonto = detalleP.Sum(x => x.precioPedido);
                     Pedido.Estado = 1;
                 
