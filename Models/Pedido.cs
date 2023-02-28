@@ -9,6 +9,8 @@ namespace SistemaDeliveryApi.Models
 {
     public class Pedido
     {
+        internal object detallePedidos;
+
         [Key]
         public int idPedido { get; set; }
 		public int idEmpleadoPedido { get; set; }

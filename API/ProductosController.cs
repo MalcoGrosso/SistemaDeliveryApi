@@ -43,7 +43,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
             }
         }
 
-
+/*
         [HttpGet("ProductosPedidos")] // obtener todos los Productos
         public async Task<object> ProductosPedidos()
         {
@@ -79,9 +79,49 @@ namespace SistemaDeliveryApi_.Net_Core.Api
             }
         }
 
+*/
 
 
+[HttpGet("ProductosPedidos")]
+public async Task<IActionResult> ProductosPedidos()
+{
+    try
+    {
+        var usuario = User.Identity.Name;
+        var usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario);
+       // var pedido = contexto.Pedidos.Include(x => x.usuario).Where(x => x.usuario.idUsuario == usuario1.idUsuario);
+       // var ultiP = await pedido.MaxAsync(x => x.idPedido);
+        var ultiP = await contexto.Pedidos.Where(x => x.usuario.idUsuario == usuario1.idUsuario).MaxAsync(x => x.idPedido);
+        var consulta1 = await contexto.Pedidos.Where(x => x.idPedido == ultiP).Select(x => x.Estado).FirstOrDefaultAsync();
         
+        if (consulta1 == 1)
+        {
+            var productos = await contexto.Productos.ToListAsync();
+            return Ok(productos);
+        }
+        else
+        {
+            var productos = await contexto.Productos.OrderBy(x => x.idProducto).ToListAsync();
+
+            for (int i = 0; i < productos.Count; i++)
+            {
+                var contador = await contexto.DetallePedido.CountAsync(x => x.IdentificadorDetallePedido == ultiP && x.idProductoDP == productos[i].idProducto);
+                productos[i].cantidad = contador;
+            }
+
+            return Ok(productos);
+        }
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+
+
         
 	}
 }
+
+
+
