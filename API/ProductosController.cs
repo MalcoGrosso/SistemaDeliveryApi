@@ -42,7 +42,6 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 return BadRequest(ex.Message);
             }
         }
-
 /*
         [HttpGet("ProductosPedidos")] // obtener todos los Productos
         public async Task<object> ProductosPedidos()
@@ -52,7 +51,7 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 
                 var usuario = User.Identity.Name;
                 Usuario usuario1 = await contexto.Usuarios.AsNoTracking().FirstOrDefaultAsync(x => x.Email == usuario); 
-                var Produc = contexto.Productos. ToArray();
+                var Produc = contexto.Productos.ToArray();
                 var pedido = contexto.Pedidos.Include(x=> x.usuario).Where(x => x.usuario.idUsuario == usuario1.idUsuario);
                 var ultiP = pedido.Max(x => x.idPedido);
                 var consulta1 = contexto.Pedidos.Where(x=> x.idPedido ==  ultiP).Single();
@@ -78,8 +77,8 @@ namespace SistemaDeliveryApi_.Net_Core.Api
                 return BadRequest(ex.Message);
             }
         }
-
 */
+
 
 
 [HttpGet("ProductosPedidos")]
